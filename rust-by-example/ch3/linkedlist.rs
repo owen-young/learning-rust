@@ -1,10 +1,17 @@
+#![allow(dead_code)]
 use crate::List::*;
 
 enum List {
     // Cons: Tuple struct that wraps an element and a pointer to the next node
+    // A Box is essentially a pointer to the next Node
     Cons(u32, Box<List>),
     // Nil: A node that signifies the end of the linked list
     Nil,
+}
+
+// function prints the type of a variable
+fn print_type_of<T>(_: &T) {
+    println!("{}", std::any::type_name::<T>())
 }
 
 // Methods can be attached to an enum
@@ -44,6 +51,7 @@ impl List {
             Cons(head, ref tail) => {
                 // `format!` is similar to `print!`, but returns a heap
                 // allocated string instead of printing to the console
+                // tail is a &alloc::boxed::Box<linkedlist::List>, references to boxes can call methods too!
                 format!("{}, {}", head, tail.stringify())
             },
             Nil => {
@@ -52,8 +60,14 @@ impl List {
         }
     }
 
+    // Consume the previous list in order to make a new one, since our tails
+    // are not mutable. This allows us to take ownership of everything.
     fn append(self, elem: u32) -> List {
         match self {
+            // This function returns a new list, but list must be structured
+            // correctly. We are taking ownership of tail, so we can directly
+            // access the Box. 
+            // tail is a alloc::boxed::Box<linkedlist::List>, Boxes can call methods!
             Cons(head, tail) => Cons(head, Box::new(tail.append(elem))),
             Nil => Cons(elem, Box::new(Nil))
         }
@@ -74,4 +88,15 @@ fn main() {
     // Show the final state of the list
     println!("linked list has length: {}", list.len());
     println!("{}", list.stringify());
+
+    // Create a list in a box
+    let mut box_list = Box::new(List::new());
+    println!("boxed linked list has length: {}", box_list.len());
+    // append some elements, however, they each need to go in their own box.
+    // Boxes behave like things on the heap in C, you can still call methods on
+    // them and stuff, the syntax is just the same as stack variables, which is..different
+    box_list = Box::new(box_list.append(5));
+    box_list = Box::new(box_list.append(7));
+    println!("{}", box_list.stringify());
+    println!("boxed linked list has length: {}", box_list.len());
 }
