@@ -49,12 +49,25 @@ fn main() {
         println!("the value is: {}", element);        
     }
 
+    // it is recommended to use Vec::with_capacity whenever possible to specify how big the vector is expected to get.
+
     let mut lst = vec![0, 1];
     lst.push(2);
     println!("vec after pushing {:?}", lst);
     // let's change vec!
     for element in lst.iter_mut() {
+        println!("element: {}", element);
         *element+= 10;
     }
     println!("vec after adding 10 to each {:?}", lst);
+
+    // cannot use iter_mut for this, compiler denies it cannot be borrowed as mutable. 
+    // it passes a reference to itself (borrows), type signature of iter_mut is &mut self, 
+    // but this is just &self. doing *element vs element has no effect, because element
+    // is automatically dereferenced. however, this does not work in the above example
+    // with *element+=10.
+    let lst = vec![2, 3];
+    for element in lst.iter() {
+        println!("element is: {}", element);
+    }
 }

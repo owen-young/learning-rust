@@ -27,17 +27,21 @@ struct Rectangle {
     bottom_right: Point,
 }
 
-fn rect_area(rectangle: Rectangle) -> f32 {
+// If this function did not have a borrow, then the rectangle would be totally 
+// destroyed after using it. This can be shown if you remove the & from this signature
+// and remove the one that passes it in on the line where this function is called. 
+// doing a borrow completely negates that, and we can keep using stuff afterwards. 
+fn rect_area(rectangle: &Rectangle) -> f32 {
     let Point { x: tx, y: ty } = rectangle.top_left;
     let Point { x: bx, y: by } = rectangle.bottom_right;
     (bx - tx) * (ty - by)
 }
 
-fn square(point: Point, len: f32) -> Rectangle {
+fn square(point: &Point, len: f32) -> Rectangle {
     let Point { x: bx, y: by } = point;
     Rectangle {
-        top_left: Point { x: bx, y: by+len },
-        bottom_right: Point { x: bx+len, y: by}
+        top_left: Point { x: *bx, y: *by+len },
+        bottom_right: Point { x: *bx+len, y: *by}
     }
 }
 
@@ -77,7 +81,11 @@ fn main() {
         bottom_right: bottom_right,
     };
 
-    println!("area of rectangle is: {}", rect_area(_rectangle));
+    println!("area of rectangle is: {}", rect_area(&_rectangle));
+    // looks like extracting bottom_right and top_left did not destroy them. I think this is just because
+    // bottom_right and top_left aren't bindings, they are just names of stuff. so they aren't destroyed
+    // until the end of the function when the entire rectangle is.
+    println!("using stuff after calling rect_area {:?}", _rectangle.bottom_right);
 
     // Instantiate a unit struct
     let _unit = Unit;
@@ -92,5 +100,5 @@ fn main() {
     let Pair(integer, decimal) = pair;
 
     println!("pair contains {:?} and {:?}", integer, decimal);
-    println!("square is: {:?}", square(point, 5.2));
+    println!("square is: {:?}", square(&point, 5.2));
 }

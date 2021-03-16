@@ -1,3 +1,10 @@
+enum Test {
+    Hello,
+    World,
+}
+
+fn inspect(&x : )
+
 fn main() {
     let an_integer = 1u32;
     let unmarked_int = 1;
@@ -23,4 +30,11 @@ fn main() {
 
     let _noisy_unused_variable = 2u32;
     // FIXME ^ Prefix with an underscore to suppress the warning
+
+    let ref mut x = 50;
+    println!("x is {}", x);
+    // the below line DOES NOT WORK! it must be dereferenced explicitly in order to modify it.
+    // x += 20;
+    *x += 20;
+    println!("x is {}", x);
 }
