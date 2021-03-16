@@ -13,8 +13,9 @@ fn main() {
     /* with the below code (and direct references commented out)
      * the code will compile, but it will crash when analyze_slice
      * is called. looks like rust can't predict everything....
+     * let xs = [];
+     * comment out second array thing
      */
-    let xs = [];
 
     // All elements can be initialized to the same value
     let ys: [i32; 500] = [0; 500];
@@ -42,4 +43,18 @@ fn main() {
 
     // Out of bound indexing causes compile error
     // println!("{}", xs[5]);
+
+    // printing an array using iter()
+    for element in xs.iter() {
+        println!("the value is: {}", element);        
+    }
+
+    let mut lst = vec![0, 1];
+    lst.push(2);
+    println!("vec after pushing {:?}", lst);
+    // let's change vec!
+    for element in lst.iter_mut() {
+        *element+= 10;
+    }
+    println!("vec after adding 10 to each {:?}", lst);
 }
