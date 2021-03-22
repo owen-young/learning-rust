@@ -25,6 +25,7 @@ fn main() {
 
     let result: Result<Vowel, ()> = 'a'.try_into();
     assert_eq!(result, Ok(Vowel('a')));
+    println!("Result: {:?}", result);
     let result: Result<Vowel, ()> = 'c'.try_into();
     assert_eq!(result, Err(()));
 }
