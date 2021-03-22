@@ -29,6 +29,10 @@ fn main() {
     println!("bad: {:?}", bad);
     match bad {
         Ok(num) => println!("Our num is: {}", num),
-        Err(msg) => println!("Our error is: {}", msg)
+        Err(ref msg) => println!("Our error is: {}", msg)
     }
+    
+    // the below two lines , when uncommented, crash the program
+    /* let sum2 = bad.unwrap() + turbo_parsed;
+    println!("bad sum: {:?}", sum2); */
 }
